@@ -60,7 +60,7 @@ trait UniversalPlugin extends Plugin {
     dist
   }
 
-  def stageFiles(config: String)(cacheDirectory: File, to: File, mappings: Seq[(File, String)]): Unit = {
+  def stageFiles(config: String)(cacheDirectory: File, to: File, mappings: Seq[(File, String)]): File = {
     val cache = cacheDirectory / ("packager-mappings-" + config)
     val copies = mappings map {
       case (file, path) => file -> (to / path)
@@ -72,6 +72,8 @@ trait UniversalPlugin extends Plugin {
       (from, to) <- copies
       if from.canExecute
     } to.setExecutable(true)
+
+    to
   }
 
   private type Packager = (File, String, Seq[(File, String)]) => File

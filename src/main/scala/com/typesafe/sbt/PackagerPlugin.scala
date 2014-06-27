@@ -14,6 +14,7 @@ object SbtNativePackager extends Plugin
   with rpm.RpmPlugin
   with windows.WindowsPlugin
   with docker.DockerPlugin
+  with bundle.BundlePlugin
   with universal.UniversalPlugin
   with GenericPackageSettings {
 
@@ -26,6 +27,7 @@ object SbtNativePackager extends Plugin
     rpmSettings ++
     windowsSettings ++
     dockerSettings ++
+    bundleSettings ++
     universalSettings ++
     Seq( // Bad defaults that let us at least not explode users who don't care about native packagers
       NativePackagerKeys.maintainer := "",
