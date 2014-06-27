@@ -179,7 +179,7 @@ trait DockerPlugin extends Plugin with UniversalPlugin {
         MappingsHelper contentOf dir
       },
       mappings <++= dockerPackageMappings,
-      stage <<= (dockerGenerateConfig, dockerGenerateContext) map { (configFile, contextDir) => () },
+      stage <<= (dockerGenerateConfig, dockerGenerateContext) map { (configFile, contextDir) => target },
       dockerGenerateContext <<= (cacheDirectory, mappings, target) map {
         (cacheDirectory, mappings, t) =>
           val contextDir = t / "files"
