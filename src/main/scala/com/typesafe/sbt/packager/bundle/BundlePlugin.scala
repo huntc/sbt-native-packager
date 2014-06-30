@@ -11,22 +11,22 @@ import java.security.MessageDigest
 import java.nio.charset.Charset
 
 trait BundlePlugin extends Plugin with UniversalPlugin {
-  val Bundle = config("bundle") extend Universal
+  val ReactiveRuntime = config("rr") extend Universal
 
   def bundleSettings: Seq[Setting[_]] = Seq(
     bundleType := Universal,
-    dist in Bundle := Def.taskDyn {
+    dist in ReactiveRuntime := Def.taskDyn {
       Def.task {
         createDist(bundleType.value)
       }.value
     }.value,
-    stage in Bundle := Def.taskDyn {
+    stage in ReactiveRuntime := Def.taskDyn {
       Def.task {
         stageBundle(bundleType.value)
       }.value
     }.value,
-    stagingDirectory in Bundle := (target in Bundle).value / "stage",
-    target in Bundle := target.value / "bundle"
+    stagingDirectory in ReactiveRuntime := (target in ReactiveRuntime).value / "stage",
+    target in ReactiveRuntime := target.value / "reactive-runtime"
   )
 
   val Sha256 = "SHA-256"
@@ -43,7 +43,7 @@ trait BundlePlugin extends Plugin with UniversalPlugin {
   }
 
   private def createDist(c: Configuration): Def.Initialize[Task[File]] = Def.task {
-    val bundleTarget = (target in Bundle).value
+    val bundleTarget = (target in ReactiveRuntime).value
     val configTarget = bundleTarget / "tmp"
     def relParent(p: (File, String)): (File, String) = (p._1, (name in Universal).value + java.io.File.separator + p._2)
     val bundleMappings =
@@ -51,13 +51,13 @@ trait BundlePlugin extends Plugin with UniversalPlugin {
         (mappings in c).value.map(relParent)
     val tgz = Archives.makeTgz(bundleTarget, (name in Universal).value, bundleMappings)
     val hash = Hash.toHex(digest.digest(IO.read(tgz, utf8Charset).getBytes(utf8Charset)))
-    val hashTgz = tgz.getParentFile / (hash + "-" + tgz.getName)
+    val hashTgz = tgz.getParentFile / (tgz.getName + "-" + hash)
     IO.move(tgz, hashTgz)
     hashTgz
   }
 
   private def stageBundle(c: Configuration): Def.Initialize[Task[File]] = Def.task {
-    val bundleTarget = (stagingDirectory in Bundle).value
+    val bundleTarget = (stagingDirectory in ReactiveRuntime).value
     createConfig(bundleTarget)
     val componentTarget = bundleTarget / (name in Universal).value
     IO.copy((mappings in c).value.map(p => (p._1, componentTarget / p._2)))
