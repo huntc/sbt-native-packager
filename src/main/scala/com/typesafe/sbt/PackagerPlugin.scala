@@ -14,7 +14,7 @@ object SbtNativePackager extends Plugin
   with rpm.RpmPlugin
   with windows.WindowsPlugin
   with docker.DockerPlugin
-  with bundle.BundlePlugin
+  with rr.BundlePlugin
   with universal.UniversalPlugin
   with GenericPackageSettings {
 

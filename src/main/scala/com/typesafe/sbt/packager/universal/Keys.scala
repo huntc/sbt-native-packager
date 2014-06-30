@@ -19,8 +19,10 @@ object Keys extends UniversalKeys {
   def packageBin = sbt.Keys.packageBin
   def packageSrc = sbt.Keys.packageSrc
   def packageDoc = sbt.Keys.packageDoc
+  def moduleID = sbt.Keys.moduleID
   def name = sbt.Keys.name
   def normalizedName = sbt.Keys.normalizedName
+  def projectInfo = sbt.Keys.projectInfo
   def target = sbt.Keys.target
   def sourceDirectory = sbt.Keys.sourceDirectory
   def streams = sbt.Keys.streams
