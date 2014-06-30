@@ -70,8 +70,11 @@ trait BundlePlugin extends Plugin with UniversalPlugin {
       configFile.pair(relativeTo(configTarget)) ++
         (mappings in bundleTypeConfig).value.map(relParent)
     val tgz = Archives.makeTgz(bundleTarget, (name in Universal).value, bundleMappings)
+    val tgzName = tgz.getName
+    val exti = tgzName.lastIndexOf('.')
     val hash = Hash.toHex(digest.digest(IO.read(tgz, utf8Charset).getBytes(utf8Charset)))
-    val hashTgz = tgz.getParentFile / (tgz.getName + "-" + hash)
+    val hashName = tgzName.take(exti) + "-" + hash + tgzName.drop(exti)
+    val hashTgz = tgz.getParentFile / hashName
     IO.move(tgz, hashTgz)
     hashTgz
   }
