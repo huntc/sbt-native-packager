@@ -37,7 +37,12 @@ ghpages.settings
 
 git.remoteRepo := "git@github.com:sbt/sbt-native-packager.git"
 
-Bintray.settings
+// FIXME: Temporary situation for publishing our branch
+//Bintray.settings
+publishTo := {
+  if (isSnapshot.value) Some(Classpaths.sbtPluginSnapshots)
+  else Some(Classpaths.sbtPluginReleases)
+}
 
 publishMavenStyle := false
 
