@@ -159,7 +159,7 @@ trait DockerPlugin extends Plugin with UniversalPlugin {
       },
       mappings <++= dockerPackageMappings,
       normalizedName <<= name apply StringUtilities.normalize,
-      stage <<= (dockerGenerateConfig, dockerGenerateContext) map { (configFile, contextDir) => target },
+      stage <<= (dockerGenerateConfig, dockerGenerateContext, target) map { (configFile, contextDir, target) => target },
       dockerGenerateContext <<= (cacheDirectory, mappings, target) map {
         (cacheDirectory, mappings, t) =>
           val contextDir = t / "files"
