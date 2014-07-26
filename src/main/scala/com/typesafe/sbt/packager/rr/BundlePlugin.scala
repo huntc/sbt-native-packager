@@ -53,7 +53,7 @@ trait BundlePlugin extends Plugin with UniversalPlugin {
     s"""
          |version = "1.0.0"
          |components = {
-         |  "${(packageFilename in Universal).value}" = {
+         |  "${(packageName in Universal).value}" = {
          |    description      = "${projectInfo.value.description}"
          |    cluster-role     = "${clusterRole.value}"
          |    file-system-type = "${bundleType.value}"
@@ -67,12 +67,12 @@ trait BundlePlugin extends Plugin with UniversalPlugin {
   private def createDist(bundleTypeConfig: Configuration): Def.Initialize[Task[File]] = Def.task {
     val bundleTarget = (target in ReactiveRuntime).value
     val configTarget = bundleTarget / "tmp"
-    def relParent(p: (File, String)): (File, String) = (p._1, (packageFilename in Universal).value + java.io.File.separator + p._2)
+    def relParent(p: (File, String)): (File, String) = (p._1, (packageName in Universal).value + java.io.File.separator + p._2)
     val configFile = writeConfig(configTarget, bundleConf.value)
     val bundleMappings =
       configFile.pair(relativeTo(configTarget)) ++
         (mappings in bundleTypeConfig).value.map(relParent)
-    val tgz = Archives.makeTgz(bundleTarget, (packageFilename in Universal).value, bundleMappings)
+    val tgz = Archives.makeTgz(bundleTarget, (packageName in Universal).value, bundleMappings)
     val tgzName = tgz.getName
     val exti = tgzName.lastIndexOf('.')
     val hash = Hash.toHex(digestFile(tgz))
@@ -103,7 +103,7 @@ trait BundlePlugin extends Plugin with UniversalPlugin {
   private def stageBundle(bundleTypeConfig: Configuration): Def.Initialize[Task[File]] = Def.task {
     val bundleTarget = (stagingDirectory in ReactiveRuntime).value
     writeConfig(bundleTarget, bundleConf.value)
-    val componentTarget = bundleTarget / (packageFilename in Universal).value
+    val componentTarget = bundleTarget / (packageName in Universal).value
     IO.copy((mappings in bundleTypeConfig).value.map(p => (p._1, componentTarget / p._2)))
     componentTarget
   }
