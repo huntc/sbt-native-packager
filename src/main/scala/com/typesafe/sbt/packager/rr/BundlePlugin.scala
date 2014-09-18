@@ -19,7 +19,6 @@ trait BundlePlugin extends Plugin with UniversalPlugin {
   def bundleSettings: Seq[Setting[_]] = Seq(
     bundleConf := getConfig.value,
     bundleType := Universal,
-    clusterRole := "web-server",
     dist in ReactiveRuntime := Def.taskDyn {
       Def.task {
         createDist(bundleType.value)
@@ -32,7 +31,7 @@ trait BundlePlugin extends Plugin with UniversalPlugin {
       }.value
     }.value,
     stagingDirectory in ReactiveRuntime := (target in ReactiveRuntime).value / "stage",
-    startCommand := Seq((file("bin") / (normalizedName in Universal).value).getPath),
+    startCommand := Seq((file("bin") / (executableScriptName in Universal).value).getPath),
     target in ReactiveRuntime := target.value / "reactive-runtime"
   )
 
@@ -55,7 +54,6 @@ trait BundlePlugin extends Plugin with UniversalPlugin {
          |components = {
          |  "${(packageName in Universal).value}" = {
          |    description      = "${projectInfo.value.description}"
-         |    cluster-role     = "${clusterRole.value}"
          |    file-system-type = "${bundleType.value}"
          |    start-command    = ${format(startCommand.value)}
          |    endpoints        = ${formatEndpoints(endpoints.value)}
